@@ -1,25 +1,8 @@
-temp <- tempfile()
-download.file("https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip",temp)
-power <- read.table(unz(temp,"household_power_consumption.txt"), 
-                    sep=";", 
-                    header = T, 
-                    na="?", 
-                    colClasses = c("character",
-                                   'character',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric',
-                                   'numeric'))
-
-unlink(temp)
-power <- power[which(power$Date == '2/2/2007' | power$Date=='1/2/2007'),]
-
-power$POSIX <-as.POSIXlt.character(paste(power$Date,power$Time),format = "%d/%m/%Y %H:%M:%S")
-
-#plot2
-png(filename="plot2.png",width=480, height=480)
-plot(x=power$POSIX ,y=power$Global_active_power, type = 'l', xlab='',ylab = 'Global Active Power (kilowatts)')
+FileName <- "/Users/nischaynidhi/Desktop/coursera/household_power_consumption.txt"
+data_access <- read.table(FileName, header=TRUE, sep=";", stringsAsFactors=FALSE, dec=".")
+subData <- data_access[data_access$Date %in% c("1/2/2007","2/2/2007") ,]
+DateTime <- strptime(paste(subData$Date, subData$Time, sep=" "), "%d/%m/%Y %H:%M:%S") 
+globalActivePower <- as.numeric(subData$Global_active_power)
+png("plot2.png", width=480, height=480)
+plot(DateTime, globalActivePower, type="l", xlab="", ylab="Global Active Power (kilowatts)")
 dev.off()
